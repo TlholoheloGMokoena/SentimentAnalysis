@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>AI-Powered Customer Sentiment Analysis & Insights Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{--bg:#293241;--g1:rgba(61,90,128,.65);--g2:rgba(29,53,87,.9);--card:rgba(207,239,242,.07);--solid:#1D3557;--tx:#CFEFF2;--mut:#9fb9d0;--bd:rgba(207,239,242,.16);--ac:#3d5a80;--pos:#35b6cb;--neu:#8d99ae;--neg:#ee6c4d;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+:root[data-theme=light]{--bg:#CFEFF2;--g1:rgba(152,193,217,.7);--g2:rgba(61,90,128,.22);--card:rgba(255,255,255,.72);--solid:#fff;--tx:#1D3557;--mut:#3d5a80;--bd:rgba(29,53,87,.16)}
+html{scroll-behavior:smooth;scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 15% 0%,var(--g1),transparent 55%),radial-gradient(ellipse at 90% 45%,var(--g2),transparent 55%),var(--bg);background-attachment:fixed;color:var(--tx);font:14px/1.5 Inter,system-ui,-apple-system,Segoe UI,sans-serif;display:flex}
+nav{width:210px;background:rgba(0,0,0,.32);backdrop-filter:blur(14px);border-right:1px solid var(--bd);padding:16px 10px;position:sticky;top:0;height:100vh;flex-shrink:0;overflow:auto}
+nav b{display:block;padding:4px 10px 14px;font-size:15px}nav a{display:block;padding:8px 10px;border-radius:8px;color:var(--mut);text-decoration:none;margin-bottom:2px}
+nav a.on{background:var(--ac);color:#fff}
+main{flex:1;min-width:0;padding:20px;max-width:1300px;margin:0 auto}
+section{margin-bottom:26px;animation:in .4s ease}@keyframes in{from{opacity:0;transform:translateY(6px)}}
+h2{font-size:17px;margin:0 0 10px}h3{font-size:14px;margin:0 0 8px}
+.card{background:var(--card);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--bd);border-radius:10px;padding:16px;box-shadow:0 6px 24px rgba(0,0,0,.25)}
+.grid{display:grid;gap:14px}.k{grid-template-columns:repeat(auto-fit,minmax(215px,1fr))}.g2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+.kv{font-size:24px;font-weight:700}.kl{color:var(--mut);font-size:12px;cursor:help}
+.ch{height:250px;position:relative}
+button,select,input,textarea{font:inherit;color:var(--tx);background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:7px 10px}
+button{cursor:pointer}button.p{background:var(--ac);color:#fff;border-color:var(--ac)}button:disabled{opacity:.5}
+textarea{width:100%;min-height:90px}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}
+.b{padding:2px 9px;border-radius:99px;font-size:11px;font-weight:600;color:#fff}.POSITIVE{background:var(--pos)}.NEUTRAL{background:var(--neu)}.NEGATIVE{background:var(--neg)}
+.chip{display:inline-block;background:rgba(255,255,255,.08);border:1px solid var(--bd);border-radius:99px;padding:2px 10px;margin:2px;font-size:12px}
+.tw{overflow-x:auto}table{border-collapse:collapse;width:100%}th,td{text-align:left;padding:8px;border-bottom:1px solid var(--bd);white-space:nowrap}
+th{cursor:pointer;color:var(--mut);font-size:12px}tbody tr{cursor:pointer}tbody tr:hover{background:rgba(255,255,255,.08)}td.t{white-space:normal;min-width:240px}
+#toast{position:fixed;right:16px;bottom:16px;display:flex;flex-direction:column;gap:6px;z-index:9}
+#toast div{background:var(--tx);color:var(--bg);padding:9px 14px;border-radius:10px;animation:in .3s}#toast .err{background:var(--neg);color:#fff}
+.empty,.hid{display:none}body.nodata .empty{display:block}body.nodata .nd{display:none}
+.em{text-align:center;padding:30px;color:var(--mut)}#cloud span{cursor:pointer;margin:3px 6px;display:inline-block}
+.up{color:var(--pos)}.dn{color:var(--neg)}ul{margin:4px 0;padding-left:18px}
+@media(max-width:760px){nav{width:128px;padding:10px 6px}nav b{padding:4px 6px 10px;font-size:13px}nav a{padding:7px 8px;font-size:12px}main{padding:12px}}
+@media print{body.pr{background:#fff;color:#000;display:block}body.pr .card{background:#fff;color:#000;box-shadow:none}body.pr>*:not(main),body.pr section:not(#reports){display:none!important}body.pr .noprint{display:none}}
+.kp{display:flex;align-items:center;gap:12px}.ring{width:54px;height:54px;border-radius:50%;background:conic-gradient(var(--rc) calc(var(--p)*1%),rgba(255,255,255,.14) 0);display:grid;place-items:center;flex-shrink:0}.ring span{width:43px;height:43px;border-radius:50%;background:var(--solid);display:grid;place-items:center;font-size:11px;font-weight:600}.ic{margin-left:auto;font-size:26px;opacity:.85}option{background:var(--solid);color:var(--tx)}h2{text-transform:uppercase;letter-spacing:.04em}button.p{background:#3d5a80;border-color:#98c1d9;color:#fff}h2{border-left:4px solid #ee6c4d;padding-left:8px}
+</style></head><body>
+<nav><b>📊 SentimentIQ</b>
+<a href="#dash">Dashboard</a><a href="#upload">Data Upload</a><a href="#analysis">Sentiment Analysis</a><a href="#insights">Insights</a><a href="#explorer">Data Explorer</a><a href="#reports">Reports</a><a href="#model">Model Information</a><a href="#project">Project Overview</a></nav>
+<main>
+<section id="dash"><div class="row"><h2 style="margin:0;flex:1"><span id="ttl">Sentiment Analysis &amp; Insights Dashboard</span> <span id="samp" class="chip hid">SAMPLE DATA</span></h2><span id="upd" class="kl"></span><button onclick="theme()">🌓 Dark mode</button></div>
+<div id="sub" class="kl" style="margin:-2px 0 6px">Load or upload text to see how people feel, what drives it, and what to do next.</div><div id="status" class="kl" aria-live="polite"></div>
+<div class="card em empty"><h3>No dataset uploaded yet.</h3>Upload a CSV file or enter text to begin sentiment analysis.<br><br><button class="p" onclick="demo()">Load Demo Dataset</button></div>
+<div id="flt" class="card nd row"></div>
+<div id="kpis" class="grid k nd"></div></section>
+
+<section id="upload"><h2>Data Upload</h2><div class="grid g2">
+<div class="card"><h3>CSV upload</h3><input type="file" id="file" accept=".csv,.tsv,.txt,text/csv,text/plain"><div id="map" class="row hid"></div></div>
+<div class="card"><h3>Type or paste text (one record per line)</h3><textarea id="ta" placeholder="Customer service was extremely helpful and resolved my issue quickly."></textarea>
+<div class="row"><button class="p" onclick="manual()">Analyze Sentiment</button><button onclick="demo()">Load Demo Dataset</button><button onclick="dlDemo()">⬇ Download sample dataset (250 rows)</button></div></div></div>
+<div class="kl" style="margin:6px 0">Each new upload or entry replaces the current dataset, so every result reflects only the newest data.</div>
+<div class="card nd"><h3>Data Quality Summary</h3><div id="dq"></div><details><summary>Review excluded records</summary><div class="tw"><table id="ex"></table></div></details></div></section>
+
+<section id="analysis" class="nd"><h2>Sentiment Analysis</h2><div class="grid g2">
+<div class="card"><h3>Distribution <span class="kl">(click a slice to filter)</span></h3><div class="ch"><canvas id="c1"></canvas></div></div>
+<div class="card"><h3>Trend <select id="gran" onchange="render()"><option value="d">Daily</option><option value="w" selected>Weekly</option><option value="m">Monthly</option></select></h3><div class="ch"><canvas id="c2"></canvas></div><div id="n2" class="kl"></div></div>
+<div class="card"><h3>Score distribution</h3><div class="ch"><canvas id="c3"></canvas></div></div>
+<div class="card" id="b4"><h3>% Positive by category</h3><div class="ch"><canvas id="c4"></canvas></div></div>
+<div class="card" id="b5"><h3>Rating vs predicted sentiment</h3><div class="ch"><canvas id="c5"></canvas></div></div>
+<div class="card"><h3>Top keywords</h3><div id="kw"></div></div></div>
+<div class="card" style="margin-top:14px"><h3>Word cloud <span class="kl">(green = positive, red = negative; click to search)</span></h3><div id="cloud"></div></div></section>
+
+<section id="insights" class="nd"><h2>AI Insights <span class="kl">(generated from the current data)</span></h2><div id="ins" class="grid g2"></div></section>
+
+<section id="explorer" class="nd"><h2>Data Explorer</h2><div class="card">
+<div class="row"><input id="q" placeholder="Search text…" oninput="T.q=this.value;T.page=0;table()"><button onclick="dl(view(),'filtered')">Export filtered CSV</button><button onclick="dl(D.recs,'all')">Export all CSV</button></div>
+<div class="tw"><table id="tbl"></table></div><div class="row"><button onclick="T.page--;table()">‹</button><span id="pg"></span><button onclick="T.page++;table()">›</button></div>
+<div id="det" class="card hid" style="margin-top:10px"></div></div></section>
+
+<section id="reports" class="nd"><h2>Reports</h2><div class="row noprint"><button class="p" onclick="report()">Generate Insights Report</button><button onclick="pdf()">Export PDF (print)</button><button onclick="dl(view(),'sentiment-results')">Export CSV</button></div><div id="rep" class="card hid"></div></section>
+
+<section id="model"><h2>Model Information</h2><div class="grid g2"><div class="card" id="mi"></div>
+<div class="card"><h3>How the Sentiment Analysis Works</h3><ol><li>You provide text (CSV, typed or pasted).</li><li>The text is cleaned: lower-cased, URLs and extra punctuation removed.</li><li>Words are split into tokens and matched to a dictionary of words with emotional weights.</li><li>The model adds up the weights, flipping them after words like “not” and boosting after “very”.</li><li>The total becomes a score from −1 to +1, which maps to Positive, Neutral or Negative.</li><li>Results are counted and grouped by date, category and keyword.</li><li>Charts and plain-English insights are written from those numbers.</li></ol></div></div></section>
+
+<section id="project"><h2>Project Overview</h2><div class="card"><h3>AI-Powered Sentiment Analysis & Data Insights Dashboard</h3>
+<p>An interactive sentiment analysis solution that uses natural language processing, machine learning, data visualization, and AI-assisted insights to analyze customer feedback and transform unstructured text into actionable business intelligence.</p>
+<b>Core Technologies:</b><br><span id="tech"></span><br><br><b>Core Competencies:</b><br><span id="comp"></span>
+<p class="kl">This build runs entirely in your browser, so uploaded data never leaves your device. The model is a swappable module (see <code>Models</code> in the source).</p></div></section>
+</main><div id="toast"></div>
+<script>
+/* ===== helpers ===== */
+const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pct=(a,b)=>b?Math.round(a/b*100):0,avg=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:0;
+const COL={POSITIVE:'#35b6cb',NEUTRAL:'#8d99ae',NEGATIVE:'#ee6c4d'},LB=['POSITIVE','NEUTRAL','NEGATIVE'];
+function toast(m,e){const d=document.createElement('div');d.textContent=m;if(e)d.className='err';$('toast').append(d);setTimeout(()=>d.remove(),3500)}
+function theme(){const r=document.documentElement;r.dataset.theme=(r.dataset.theme||'dark')=='dark'?'light':'dark';render()}
+$('tech').innerHTML=['Python (model is swappable)','Pandas-style data prep','NLP','Machine Learning','Sentiment Analysis','Data Visualization','SQL where applicable','REST APIs','AI/Generative AI'].map(x=>`<span class="chip">${x}</span>`).join('');
+$('comp').innerHTML=['Data interpretation','Analytical thinking','Text classification','Machine learning','AI-assisted insights','Data visualization','Business intelligence'].map(x=>`<span class="chip">${x}</span>`).join('');
+
+/* ===== NLP preprocessing ===== */
+const STOP=new Set("a an the and or but if of to in on at for with from by as is are was were be been am it its this that these those i me my we our you your he she they them their so very just than then too also can could would should will have has had do does did not no nor there here what which who about into over after before up out all any some more most really get got one still only even".split(" "));
+const tokenize=t=>t.toLowerCase().replace(/https?:\/\/\S+/g,' ').replace(/[^a-z0-9'\s]/g,' ').split(/\s+/).filter(Boolean);
+/* ===== Sentiment model (pluggable): any object with predict(tokens, original) -> {score,label,conf,p,n} ===== */
+const LEX={};("great:2.5 excellent:3 amazing:3 love:2.8 loved:2.8 good:1.8 happy:2.2 helpful:2.2 fast:1.6 friendly:2 quick:1.5 quickly:1.5 easy:1.6 perfect:3 awesome:3 best:2.6 fantastic:3 wonderful:2.8 lovely:2.2 recommend:2 satisfied:2 pleased:2 smooth:1.5 reliable:2 comfortable:1.8 worth:1.5 impressed:2.4 nice:1.6 beautiful:2.2 brilliant:2.8 early:1.2 resolved:1.8 professional:1.8 durable:1.8 sturdy:1.8 superb:3 solid:1.5 delighted:3 enjoy:2 enjoyed:2 bad:-2 terrible:-3 awful:-3 horrible:-3 poor:-2.2 disappointed:-2.5 disappointing:-2.5 slow:-1.8 late:-1.8 delay:-1.8 delayed:-1.8 broken:-2.5 broke:-2.4 rude:-2.8 cheap:-1.5 waste:-2.5 refund:-1.2 worst:-3 useless:-2.8 crashing:-2.2 crashes:-2.2 confusing:-1.8 expensive:-1.2 damaged:-2.5 defective:-2.8 faulty:-2.5 unhelpful:-2.4 stopped:-1.2 hate:-2.8 angry:-2.5 frustrating:-2.4 frustrated:-2.4 problem:-1.5 problems:-1.5 issue:-0.8 missing:-1.5 wrong:-1.8 complaint:-1.8 ignored:-2.2 overpriced:-2 noisy:-1.5 failed:-2.2 unacceptable:-2.8 scam:-3 nobody:-1").split(' ').forEach(p=>{const[w,v]=p.split(':');LEX[w]=+v});
+const BOOST={very:1.5,extremely:1.6,really:1.4,so:1.3,incredibly:1.6,slightly:.6,somewhat:.6},NEGT=new Set(['not','no','never','hardly','without']);
+const Models={lexicon:{name:'Lexicon + rules (VADER-style)',type:'Rule-based lexicon with negation, intensifier and "!" handling',task:'3-class sentiment classification (Positive / Neutral / Negative)',
+ predict(tk,orig){let s=0,p=0,n=0;tk.forEach((w,i)=>{let v=LEX[w];if(v==null)return;const prev=tk.slice(Math.max(0,i-3),i);
+  prev.forEach(x=>{if(BOOST[x])v*=BOOST[x]});if(prev.some(x=>NEGT.has(x)||x.endsWith("n't")))v*=-.75;v>0?p++:n++;s+=v});
+  s*=1+.1*Math.min(3,(orig.match(/!/g)||[]).length);s=s/Math.sqrt(s*s+6);
+  const label=s>=.15?'POSITIVE':s<=-.15?'NEGATIVE':'NEUTRAL';
+  const conf=label=='NEUTRAL'?.5+.4*(.15-Math.abs(s))/.15:Math.min(.99,.55+Math.abs(s)*.6);
+  return{score:s,label,conf,p,n}}}};
+let MODEL=Models.lexicon; // swap for a Naive Bayes / DistilBERT / API-backed model here
+
+/* ===== state ===== */
+let SRC='',D,F,T={q:'',sort:'date',dir:-1,page:0},CH={},PEND=null;
+const FAC=['category','product','location','department','channel','customer_type'];
+function reset(){D={recs:[],keys:new Set(),q:{total:0,missing:0,dups:0,short:0,badDate:0,badRating:0,excl:[]},truth:false,textCol:'—',demo:false,at:null};F={sent:'',d1:'',d2:'',conf:0,rating:'',f:{}}}reset();
+const cleanName=n=>{const w=n.replace(/\.[^.]+$/,'').replace(/\(\d+\)/g,' ').split(/[^A-Za-z0-9]+/).filter(x=>x&&!/^(dataset|data|sample|file|export|copy|final|new|csv|v\d+|\d+)$/i.test(x));return w.length?w.map(x=>x[0].toUpperCase()+x.slice(1).toLowerCase()).join(' '):'Uploaded Data'};
+const norm=k=>k.trim().toLowerCase().replace(/[\s-]+/g,'_');
+const pick=(o,ks)=>{for(const k of ks)if(o[k]!=null&&String(o[k]).trim()!=='')return o[k]};
+const TRUTH={positive:'POSITIVE',pos:'POSITIVE',negative:'NEGATIVE',neg:'NEGATIVE',neutral:'NEUTRAL',neu:'NEUTRAL'};
+
+/* ===== ingestion pipeline: validate -> preprocess -> predict -> append ===== */
+let RUN=0; // id of the latest analysis; older runs stop if a newer one starts
+/* wipe everything tied to the previous dataset */
+function clearUI(){T={q:'',sort:'date',dir:-1,page:0};$('q').value='';$('det').classList.add('hid');$('rep').classList.add('hid');$('rep').innerHTML='';$('tbl').innerHTML='';Object.values(CH).forEach(c=>c.destroy());CH={};document.body.classList.add('nodata')}
+async function ingest(rows,textCol,truthCol,mode){
+ const my=++RUN;reset();clearUI();D.src=SRC;const st=$('status');let id=D.recs.length,i=0;D.textCol=textCol;D.demo=false;
+ st.textContent=`Analyzing ${rows.length} records…`;
+ for(const row of rows){
+  if(i++%400==0){await new Promise(r=>setTimeout(r));if(my!=RUN)return}
+  const raw={};for(const k in row)raw[norm(k)]=row[k];D.q.total++;
+  const text=String(row.__t??'').replace(/\s+/g,' ').trim();
+  if(!text){D.q.missing++;D.q.excl.push([D.q.total,'Missing text',text]);continue}
+  const tk=tokenize(text);if(text.length<4||tk.length<1){D.q.short++;D.q.excl.push([D.q.total,'Extremely short text',text]);continue}
+  const key=text.toLowerCase()+'|'+(pick(raw,['date','created_at','timestamp'])||'')+'|'+(pick(raw,['customer_id','customer','id'])||'');
+  if(D.keys.has(key)){D.q.dups++;D.q.excl.push([D.q.total,'Duplicate',text]);continue}D.keys.add(key);
+  const dr=pick(raw,['date','created_at','timestamp']);let date=dr?new Date(dr):null;if(date&&isNaN(date)){D.q.badDate++;date=null}
+  const rr=pick(raw,['rating','stars']);let rating=rr!=null?parseFloat(rr):null;if(rr!=null&&!(rating>=1&&rating<=5)){D.q.badRating++;rating=null}
+  const kt=[...new Set(tk.filter(w=>!STOP.has(w)&&w.length>2&&!/^\d+$/.test(w)))];
+  const r=MODEL.predict(tk,text);const f={};FAC.forEach(k=>{const v=pick(raw,[k]);if(v!=null)f[k]=String(v).trim()});
+  if(f.location==null){const l=pick(raw,['city','country']);if(l)f.location=String(l)}
+  const tv=truthCol?TRUTH[String(raw[norm(truthCol)]||'').trim().toLowerCase()]:null;
+  D.recs.push({id:++id,text,proc:kt.join(' '),kt,date,rating,f,raw,truth:tv,...r})}
+ if(!D.recs.length)toast('No valid records found in this data. Check the text column.',1);D.truth=D.recs.some(r=>r.truth);D.at=new Date();F={sent:'',d1:'',d2:'',conf:0,rating:'',f:{}};
+ st.textContent=`Analysis complete — ${rows.length} records processed.`;if(D.recs.length)toast(`${D.recs.length.toLocaleString()} records analyzed.`);
+ buildFilters();render();T.page=0}
+function manual(){const l=$('ta').value.split('\n').map(s=>s.trim()).filter(Boolean);if(!l.length)return toast('Enter some text first.',1);
+ SRC='Typed Text';ingest(l.map(t=>({__t:t})),'typed text',null,mode()).then(()=>$('ta').value='')}
+const mode=()=>'replace'; // every new upload/entry replaces the old data
+
+/* ===== CSV ===== */
+function parseCSV(s,dl=','){const rows=[];let r=[],c='',q=false;for(let i=0;i<s.length;i++){const ch=s[i];
+ if(q){if(ch=='"'){if(s[i+1]=='"'){c+='"';i++}else q=false}else c+=ch}
+ else if(ch=='"')q=true;else if(ch==dl){r.push(c);c=''}else if(ch=='\n'||ch=='\r'){if(ch=='\r'&&s[i+1]=='\n')i++;r.push(c);c='';if(r.some(x=>x.trim()))rows.push(r);r=[]}else c+=ch}
+ r.push(c);if(r.some(x=>x.trim()))rows.push(r);return rows}
+$('file').onchange=e=>{const f=e.target.files[0];e.target.value='';if(!f)return; // reset input so the same file can be chosen again
+ if(/\.xlsx?$/i.test(f.name))return toast('Excel files are not supported. In Excel use Save As → CSV (UTF-8), then upload that file.',1);
+ if(!/\.(csv|tsv|txt)$/i.test(f.name))return toast('Unsupported file type. Please upload a .csv file.',1);
+ if(f.size>25e6)return toast('File is too large (max 25 MB).',1);
+ const rd=new FileReader();rd.onerror=()=>toast('The file could not be read. Please try again.',1);
+ rd.onload=()=>{try{let txt;try{txt=new TextDecoder('utf-8',{fatal:true}).decode(rd.result)}catch{txt=new TextDecoder('windows-1252').decode(rd.result)}
+  txt=txt.replace(/^\uFEFF/,''); // remove Excel's byte-order mark
+  const first=txt.split(/\r?\n/)[0],dl=[',',';','\t','|'].map(d=>[d,first.split(d).length]).sort((a,b)=>b[1]-a[1])[0][0]; // detect delimiter
+  const rows=parseCSV(txt,dl);if(rows.length<2)return toast('The file is empty or contains only a header row.',1);
+  const h=rows[0].map((x,i)=>x.trim()||'column_'+(i+1)),objs=rows.slice(1).map(r=>Object.fromEntries(h.map((k,i)=>[k,r[i]??''])));
+  const pr=['review','review_text','comment','feedback','message','text','description','sentiment'];
+  const cands=h.filter(k=>pr.includes(norm(k))).sort((a,b)=>pr.indexOf(norm(a))-pr.indexOf(norm(b)));
+  PEND={objs,h,src:cleanName(f.name)};const m=$('map');m.classList.remove('hid');
+  m.innerHTML=`<span>Text column:</span><select id="tc">${[...cands,...h.filter(x=>!cands.includes(x))].map(x=>`<option>${esc(x)}</option>`).join('')}</select><button class="p" onclick="goCSV()">Analyze ${objs.length.toLocaleString()} rows</button>`;
+  if(cands.length==1)goCSV(); // one obvious text column: analyze straight away
+  else toast('Choose the text column, then click Analyze.')}catch{toast('Unable to process this file. Please upload a valid CSV.',1)}};rd.readAsArrayBuffer(f)};
+function goCSV(){if(!PEND)return;const tc=$('tc').value;const tr=h=>h.find(k=>['sentiment','label'].includes(norm(k))&&k!=tc);
+ const t=tr(PEND.h);const ok=t&&PEND.objs.filter(o=>o[t]).length&&PEND.objs.filter(o=>TRUTH[String(o[t]).trim().toLowerCase()]).length>=.8*PEND.objs.filter(o=>o[t]).length;
+ SRC=PEND.src;ingest(PEND.objs.map(o=>({...o,__t:o[tc]})),tc,ok?t:null,mode());PEND=null;$('map').classList.add('hid')}
+
+/* ===== demo data (seeded, so it is repeatable) ===== */
+function demo(){let s=7;const R=()=>(s=(s*16807)%2147483647)/2147483647,pk=a=>a[Math.floor(R()*a.length)];
+ const P=[['Aurora Headphones','Electronics',.7],['Nimbus Smart Lamp','Home',.5],['Trail Backpack','Outdoor',.62],['PureBrew Kettle','Home',.3],['Pulse Fitness Band','Electronics',.45]];
+ const POS=["Customer service was extremely helpful and resolved my issue quickly.","The {p} works great and the quality is excellent.","Fast delivery and friendly staff, really happy with my {p}.","Love the {p}, easy to use and worth the price!","Packaging was lovely and the {p} arrived early.","Honestly impressed. The {p} feels solid and reliable."];
+ const NEG=["The delivery was late and nobody answered my emails.","My {p} stopped working after a week, very disappointed.","Terrible support, rude staff and no refund.","The {p} feels cheap and broke quickly, a waste of money.","Slow shipping and the app keeps crashing.","Not happy. The {p} arrived damaged and the process to return it was confusing."];
+ const NEU=["I ordered the {p} on Tuesday and it came in a standard box.","The {p} does what it says, nothing more.","Received the {p}. Still testing it.","Average experience, delivery took about five days.","It is a kettle, lamp or band like any other. Not sure yet."];
+ const MIX=["The {p} is great but delivery was slow.","Helpful staff, however the price is too expensive.","Good quality but the app is confusing and support was slow.","Not bad, though I expected better battery life."];
+ const CL={p:['Would order again.','Highly recommend.','Arrived well packed.'],n:['Will not recommend.','Waited two weeks for a reply.','Very frustrating.'],u:['Will update later.','Packaging was plain.'],m:['Overall it is fine.','Mixed feelings.']};
+ const rows=[];for(let i=0;i<250;i++){const[p,c,b]=pk(P),day=i*.72,x=R(),pb=Math.min(.9,b+day/180*.15);
+  const k=x<pb?'p':x<pb+.18?'m':x<pb+.3?'u':'n',t=pk(k=='p'?POS:k=='n'?NEG:k=='u'?NEU:MIX).replace('{p}',p)+(R()<.4?' '+pk(CL[k]):'');
+  const rt=k=='p'?(R()<.8?5:4):k=='n'?(R()<.8?1:2):3+(R()<.3?1:0)-(R()<.2?1:0);
+  rows.push({id:1000+i,date:new Date(Date.now()-(180-day)*864e5).toISOString().slice(0,10),customer:'C'+(100+i),product:p,category:c,rating:rt,review:t,location:pk(['Johannesburg','Cape Town','Durban','Pretoria','Gqeberha']),__t:t})}
+ DEMO=rows.map(({__t,...r})=>r);SRC='Sample Customer Reviews';reset();ingest(rows,'review',null,'replace').then(()=>{if(D.src=='Sample Customer Reviews'){D.demo=true;render()}})}
+let DEMO=[];
+function dlDemo(){if(!DEMO.length)return toast('Load the demo dataset first.',1);const H=Object.keys(DEMO[0]),c=x=>'"'+String(x).replace(/"/g,'""')+'"';
+ const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([[H.join(','),...DEMO.map(r=>H.map(k=>c(r[k])).join(','))].join('\n')],{type:'text/csv'}));a.download='sample-reviews-250.csv';a.click();toast('Sample dataset downloaded (250 rows).')}
+
+/* ===== filtering ===== */
+function view(){return D.recs.filter(r=>(!F.sent||r.label==F.sent)&&(!F.d1||(r.date&&r.date>=new Date(F.d1)))&&(!F.d2||(r.date&&r.date<=new Date(F.d2+'T23:59:59')))&&
+ r.conf>=F.conf&&(!F.rating||r.rating==F.rating)&&Object.entries(F.f).every(([k,v])=>!v||r.f[k]==v))}
+function buildFilters(){const R=D.recs,e=$('flt');let h=`<b>Filters</b><select onchange="F.sent=this.value;render()"><option value="">Sentiment: all</option>${LB.map(l=>`<option ${F.sent==l?'selected':''}>${l}</option>`).join('')}</select>`;
+ if(R.some(r=>r.date))h+=`<input type="date" onchange="F.d1=this.value;render()" title="From"><input type="date" onchange="F.d2=this.value;render()" title="To">`;
+ FAC.forEach(k=>{const u=[...new Set(R.map(r=>r.f[k]).filter(Boolean))].sort();if(u.length>1&&u.length<60)h+=`<select onchange="F.f['${k}']=this.value;render()"><option value="">${k.replace('_',' ')}: all</option>${u.map(x=>`<option>${esc(x)}</option>`).join('')}</select>`});
+ if(R.some(r=>r.rating))h+=`<select onchange="F.rating=this.value;render()"><option value="">Rating: all</option>${[1,2,3,4,5].map(x=>`<option>${x}</option>`).join('')}</select>`;
+ h+=`<label class="kl">Min confidence <input type="range" min="0" max="95" step="5" value="${F.conf*100}" oninput="F.conf=this.value/100;render()"></label><button onclick="F={sent:'',d1:'',d2:'',conf:0,rating:'',f:{}};buildFilters();render()">Clear Filters</button>`;e.innerHTML=h}
+
+/* ===== analytics ===== */
+function kw(v){const c={pos:{},neg:{},all:{}};v.forEach(r=>r.kt.forEach(w=>{c.all[w]=(c.all[w]||0)+1;if(r.label=='POSITIVE')c.pos[w]=(c.pos[w]||0)+1;if(r.label=='NEGATIVE')c.neg[w]=(c.neg[w]||0)+1}));
+ const top=(o,f)=>Object.entries(o).filter(f).sort((a,b)=>b[1]-a[1]).slice(0,10);
+ const pos=top(c.pos,([w,n])=>n>(c.neg[w]||0)),neg=top(c.neg,([w,n])=>n>(c.pos[w]||0)),u=new Set([...pos,...neg].map(x=>x[0]));
+ return{pos,neg,com:Object.entries(c.all).filter(([w])=>!u.has(w)).sort((a,b)=>b[1]-a[1]).slice(0,10),c}}
+const grp=(v,f)=>{const m={};v.forEach(r=>{const k=f(r);if(k!=null)(m[k]=m[k]||[]).push(r)});return m};
+function bucket(d,g){if(g=='m')return d.toISOString().slice(0,7);if(g=='w'){const x=new Date(d);x.setDate(x.getDate()-((x.getDay()+6)%7));return x.toISOString().slice(0,10)}return d.toISOString().slice(0,10)}
+function trend(v,g){const m=grp(v.filter(r=>r.date),r=>bucket(r.date,g));return Object.keys(m).sort().map(k=>[k,m[k]])}
+function insights(v){const n=v.length,P=v.filter(r=>r.label=='POSITIVE').length,N=v.filter(r=>r.label=='NEGATIVE').length,U=n-P-N,m=avg(v.map(r=>r.score)),K=kw(v),o={};
+ const tone=m>=.15?'positive':m<=-.15?'negative':'mixed or neutral';
+ o['Overall Insight']=[`Overall sentiment is ${tone}: ${pct(P,n)}% of ${n.toLocaleString()} analyzed records are positive, ${pct(N,n)}% negative and ${pct(U,n)}% neutral (mean score ${m.toFixed(2)}).`];
+ const cf=avg(v.map(r=>r.conf));o['Overall Insight'].push(`Average model confidence is ${Math.round(cf*100)}%. Treat neutral records with caution because they include mixed reviews.`);
+ const cat=grp(v,r=>r.f.category||r.f.product||r.f.department).constructor&&grp(v,r=>r.f.category||r.f.product||r.f.department);
+ const cs=Object.entries(cat).filter(([,a])=>a.length>=3).map(([k,a])=>[k,pct(a.filter(r=>r.label=='POSITIVE').length,a.length),pct(a.filter(r=>r.label=='NEGATIVE').length,a.length)]);
+ const pd=grp(v,r=>r.f.product),ps=Object.entries(pd).filter(([,a])=>a.length>=3).map(([k,a])=>[k,pct(a.filter(r=>r.label=='POSITIVE').length,a.length),pct(a.filter(r=>r.label=='NEGATIVE').length,a.length)]);
+ const segs=ps.length>1?ps:cs;let best,worst;
+ if(segs.length>1){best=[...segs].sort((a,b)=>b[1]-a[1])[0];worst=[...segs].sort((a,b)=>b[2]-a[2])[0];
+  o['Overall Insight'].push(`${best[0]} has the strongest positive sentiment (${best[1]}% positive), while ${worst[0]} has the highest share of negative feedback (${worst[2]}%).`)}
+ o['Positive Drivers']=K.pos.length?[`Positive reviews most often mention: ${K.pos.slice(0,6).map(x=>`${x[0]} (${x[1]})`).join(', ')}.`]:['Not enough positive text to identify drivers.'];
+ o['Negative Drivers']=K.neg.length?[`Negative reviews most often mention: ${K.neg.slice(0,6).map(x=>`${x[0]} (${x[1]})`).join(', ')}.`]:['Not enough negative text to identify drivers.'];
+ const tr=trend(v,'w');const th=Math.floor(tr.length/3);
+ if(tr.length>=4&&th>=1){const f=tr.slice(0,th).flatMap(x=>x[1]),l=tr.slice(-th).flatMap(x=>x[1]),d=pct(l.filter(r=>r.label=='POSITIVE').length,l.length)-pct(f.filter(r=>r.label=='POSITIVE').length,f.length);
+  o['Emerging Trends']=[`Positive share moved from ${pct(f.filter(r=>r.label=='POSITIVE').length,f.length)}% in the earliest weeks to ${pct(l.filter(r=>r.label=='POSITIVE').length,l.length)}% in the latest weeks (${d>=0?'+':''}${d} pts), so sentiment is ${Math.abs(d)<4?'broadly stable':d>0?'improving':'declining'}.`]}
+ else o['Emerging Trends']=['Not enough dated history (needs about 4+ weeks of dated records) to describe a trend.'];
+ const a=[];K.neg.slice(0,3).forEach(x=>a.push(`Investigate “${x[0]}”: it appears in ${x[1]} negative record(s).`));
+ if(worst&&worst[2]>=20)a.push(`Prioritise ${worst[0]}: ${worst[2]}% of its feedback is negative.`);
+ if(K.pos.length)a.push(`Protect and promote strengths: ${K.pos.slice(0,3).map(x=>x[0]).join(', ')}.`);
+ if(!a.length)a.push('Collect more feedback to produce reliable recommendations.');o['Recommended Actions']=a;return{o,n,P,N,U,m,K,segs}}
+
+/* ===== rendering ===== */
+function mk(id,cfg){CH[id]?.destroy();cfg.options={maintainAspectRatio:false,animation:{duration:350},...cfg.options};CH[id]=new Chart($(id),cfg)}
+/* Title and subtitle are built from the loaded data: text type, products/categories, date range, overall tone */
+function heading(){const A=D.recs,ttl=/sentiment/i.test(D.src)?D.src+' Dashboard':D.src+' Sentiment Dashboard';$('ttl').textContent=ttl;try{document.title=ttl}catch{}
+ const ds=A.filter(r=>r.date).map(r=>r.date).sort((a,b)=>a-b),f=d=>d.toLocaleDateString('en',{month:'short',year:'numeric'});
+ const P=A.filter(r=>r.label=='POSITIVE').length,N=A.filter(r=>r.label=='NEGATIVE').length,m=avg(A.map(r=>r.score));
+ $('sub').textContent=`${A.length.toLocaleString()} records analyzed${ds.length?' · '+(f(ds[0])==f(ds.at(-1))?f(ds[0]):f(ds[0])+' – '+f(ds.at(-1))):''} · overall tone ${m>=.15?'positive':m<=-.15?'negative':'mixed/neutral'} (${pct(P,A.length)}% positive, ${pct(N,A.length)}% negative)`}
+function render(){const A=D.recs;document.body.classList.toggle("nodata",!A.length);$('samp').classList.toggle('hid',!D.demo);
+ if(!A.length)return;const v=view(),n=v.length,cs=getComputedStyle(document.documentElement);Chart.defaults.color=cs.getPropertyValue('--mut');Chart.defaults.borderColor=cs.getPropertyValue('--bd');
+ $('upd').textContent='Last updated: '+D.at.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'});heading();
+ const cnt=l=>v.filter(r=>r.label==l).length,P=cnt('POSITIVE'),U=cnt('NEUTRAL'),N=cnt('NEGATIVE'),m=avg(v.map(r=>r.score));
+ const dated=v.filter(r=>r.date).sort((a,b)=>a.date-b.date);let tr='';
+ if(dated.length>=10){const h=dated.length>>1,d=avg(dated.slice(h).map(r=>r.score))-avg(dated.slice(0,h).map(r=>r.score));tr=`<div class="${d>=0?'up':'dn'}">${d>=0?'▲':'▼'} ${Math.abs(d).toFixed(2)} vs earlier half</div>`}
+ const K=[['Total Records',n.toLocaleString(),'Records that passed validation and match current filters'],['Positive',P,'Records scored ≥ +0.15'],['Neutral',U,'Scores between −0.15 and +0.15'],['Negative',N,'Records scored ≤ −0.15'],
+ ['Overall Score',m.toFixed(2)+tr,'Mean sentiment score, from −1 (very negative) to +1 (very positive)'],['Positive %',pct(P,n)+'%','Share of positive records'],['Negative %',pct(N,n)+'%','Share of negative records'],['Avg Confidence',Math.round(avg(v.map(r=>r.conf))*100)+'%','Heuristic certainty of each prediction (not a measured accuracy)']];
+ const AC='#98c1d9',RP=[pct(n,A.length),pct(P,n),pct(U,n),pct(N,n),Math.round((m+1)*50),pct(P,n),pct(N,n),Math.round(avg(v.map(r=>r.conf))*100)],RC=[AC,COL.POSITIVE,COL.NEUTRAL,COL.NEGATIVE,AC,COL.POSITIVE,COL.NEGATIVE,AC],IC=['🗂️','😊','😐','😞','📈','👍','👎','🎯'];
+ $('kpis').innerHTML=K.map((k,i)=>`<div class="card kp" title="${k[2]}"><div class="ring" style="--p:${RP[i]};--rc:${RC[i]}"><span>${RP[i]}%</span></div><div><div class="kv">${k[1]}</div><div class="kl">${k[0]} ⓘ</div></div><div class="ic">${IC[i]}</div></div>`).join('');
+ const q=D.q;$('dq').innerHTML=`Total rows: <b>${q.total}</b> · Valid: <b>${A.length}</b> · Missing text: <b>${q.missing}</b> · Duplicates: <b>${q.dups}</b> · Too short: <b>${q.short}</b> · Excluded: <b>${q.excl.length}</b> · Invalid dates: <b>${q.badDate}</b> · Invalid ratings: <b>${q.badRating}</b>`;
+ $('ex').innerHTML='<tr><th>Row</th><th>Reason</th><th>Text</th></tr>'+q.excl.slice(0,200).map(x=>`<tr><td>${x[0]}</td><td>${x[1]}</td><td>${esc(x[2]).slice(0,80)}</td></tr>`).join('');
+ mk('c1',{type:'doughnut',data:{labels:LB,datasets:[{data:[P,U,N],backgroundColor:LB.map(l=>COL[l]),borderColor:'transparent'}]},options:{onClick:(e,el)=>{if(el.length){const l=LB[el[0].index];F.sent=F.sent==l?'':l;buildFilters();render()}}}});
+ const g=$('gran').value,t=trend(v,g);$('n2').textContent=t.length?'':'No dates in the current data, so no trend is available.';
+ mk('c2',{type:'line',data:{labels:t.map(x=>x[0]),datasets:LB.map(l=>({label:l,data:t.map(x=>x[1].filter(r=>r.label==l).length),borderColor:COL[l],tension:.3}))}});
+ const bins=Array(10).fill(0);v.forEach(r=>bins[Math.min(9,Math.floor((r.score+1)*5))]++);
+ mk('c3',{type:'bar',data:{labels:bins.map((_,i)=>(i/5-1).toFixed(1)),datasets:[{data:bins,backgroundColor:bins.map((_,i)=>i<4?COL.NEGATIVE:i>5?COL.POSITIVE:COL.NEUTRAL)}]},options:{plugins:{legend:{display:false}}}});
+ const cat=grp(v,r=>r.f.category||r.f.product),ck=Object.keys(cat);$('b4').style.display=ck.length>1?'':'none';
+ if(ck.length>1)mk('c4',{type:'bar',data:{labels:ck,datasets:[{label:'% positive',data:ck.map(k=>pct(cat[k].filter(r=>r.label=='POSITIVE').length,cat[k].length)),backgroundColor:COL.POSITIVE}]},options:{indexAxis:'y',scales:{x:{max:100}},plugins:{legend:{display:false}}}});
+ const rt=grp(v,r=>r.rating),rk=Object.keys(rt).sort();$('b5').style.display=rk.length?'':'none';
+ if(rk.length)mk('c5',{type:'bar',data:{labels:rk.map(x=>x+'★'),datasets:LB.map(l=>({label:l,data:rk.map(k=>pct(rt[k].filter(r=>r.label==l).length,rt[k].length)),backgroundColor:COL[l]}))},options:{scales:{x:{stacked:true},y:{stacked:true,max:100}}}});
+ const kk=kw(v),ch=(a,c)=>a.map(x=>`<span class="chip" style="border-color:${c}">${esc(x[0])} · ${x[1]}</span>`).join('')||'<span class="kl">none</span>';
+ $('kw').innerHTML=`<b class="up">Positive</b><br>${ch(kk.pos,COL.POSITIVE)}<br><b class="dn">Negative</b><br>${ch(kk.neg,COL.NEGATIVE)}<br><b>Neutral / common</b><br>${ch(kk.com,COL.NEUTRAL)}`;
+ const w=Object.entries(kk.c.all).sort((a,b)=>b[1]-a[1]).slice(0,40),mx=w[0]?w[0][1]:1;
+ $('cloud').innerHTML=w.map(([x,c])=>`<span onclick="$('q').value='${esc(x)}';T.q='${esc(x)}';T.page=0;table();$('explorer').scrollIntoView()" style="font-size:${12+c/mx*26}px;color:${(kk.c.pos[x]||0)>(kk.c.neg[x]||0)?COL.POSITIVE:(kk.c.neg[x]||0)>(kk.c.pos[x]||0)?COL.NEGATIVE:'var(--mut)'}">${esc(x)}</span>`).join('');
+ const I=insights(v);$('ins').innerHTML=Object.entries(I.o).map(([h,a])=>`<div class="card"><h3>${h}</h3><ul>${a.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`).join('');
+ model(v);table()}
+function metrics(){const r=D.recs.filter(x=>x.truth);if(!r.length)return null;const ms=LB.map(l=>{const tp=r.filter(x=>x.truth==l&&x.label==l).length,fp=r.filter(x=>x.truth!=l&&x.label==l).length,fn=r.filter(x=>x.truth==l&&x.label!=l).length;
+ return{s:tp+fn,p:tp+fp?tp/(tp+fp):0,r:tp+fn?tp/(tp+fn):0}}).filter(x=>x.s);ms.forEach(x=>x.f=x.p+x.r?2*x.p*x.r/(x.p+x.r):0);
+ return{n:r.length,acc:r.filter(x=>x.truth==x.label).length/r.length,p:avg(ms.map(x=>x.p)),r:avg(ms.map(x=>x.r)),f:avg(ms.map(x=>x.f))}}
+function model(){const M=metrics(),f=x=>(x*100).toFixed(1)+'%';$('mi').innerHTML=`<h3>Model</h3><b>Name:</b> ${MODEL.name}<br><b>Type:</b> ${MODEL.type}<br><b>Task:</b> ${MODEL.task}<br><b>Records analyzed:</b> ${D.recs.length.toLocaleString()}<br><b>Text column:</b> ${esc(D.textCol)}<br><br>`+
+ (M?`<b>Performance vs labelled column (${M.n} records, macro-averaged):</b><br>Accuracy ${f(M.acc)} · Precision ${f(M.p)} · Recall ${f(M.r)} · F1 ${f(M.f)}`:'<i>Model performance metrics are unavailable because the uploaded dataset does not contain labelled ground-truth sentiment values.</i>')}
+function showD(id){const r=D.recs.find(x=>x.id==id),e=$('det');e.classList.remove('hid');
+ const tone=r.p&&r.n?'Mixed':r.label=='POSITIVE'?(r.score>.6?'Delighted':'Satisfied'):r.label=='NEGATIVE'?(r.score<-.6?'Angry / frustrated':'Dissatisfied'):'Neutral / informational';
+ e.innerHTML=`<h3>Review #${r.id} <span class="b ${r.label}">${r.label}</span></h3><p>“${esc(r.text)}”</p>Score: <b>${r.score.toFixed(2)}</b> · Confidence: <b>${Math.round(r.conf*100)}%</b> · Tone: <b>${tone}</b><br>Keywords: ${r.kt.slice(0,10).map(x=>`<span class="chip">${esc(x)}</span>`).join('')}<br><span class="kl">Processed text: ${esc(r.proc)}</span>`}
+function table(){const v=view().filter(r=>!T.q||r.text.toLowerCase().includes(T.q.toLowerCase()));const k=T.sort,g=r=>k=='text'?r.text:k=='cat'?(r.f.category||''):k=='date'?(r.date||0):r[k];
+ v.sort((a,b)=>(g(a)>g(b)?1:g(a)<g(b)?-1:0)*T.dir);const pp=10,pgs=Math.max(1,Math.ceil(v.length/pp));T.page=Math.max(0,Math.min(T.page,pgs-1));
+ const H=[['text','Text'],['label','Sentiment'],['score','Score'],['conf','Confidence'],['date','Date'],['cat','Category']];
+ $('tbl').innerHTML=`<thead><tr>${H.map(h=>`<th onclick="T.dir=T.sort=='${h[0]}'?-T.dir:1;T.sort='${h[0]}';table()">${h[1]}${T.sort==h[0]?(T.dir>0?' ▲':' ▼'):''}</th>`).join('')}</tr></thead><tbody>`+
+ v.slice(T.page*pp,T.page*pp+pp).map(r=>`<tr onclick="showD(${r.id})"><td class="t">${esc(r.text.slice(0,110))}</td><td><span class="b ${r.label}">${r.label}</span></td><td>${r.score.toFixed(2)}</td><td>${Math.round(r.conf*100)}%</td><td>${r.date?r.date.toISOString().slice(0,10):'—'}</td><td>${esc(r.f.category||'—')}</td></tr>`).join('')+'</tbody>';
+ $('pg').textContent=`Page ${T.page+1} of ${pgs} · ${v.length.toLocaleString()} rows`}
+
+/* ===== export & report ===== */
+function dl(rows,name){if(!rows.length)return toast('Nothing to export.',1);const ks=[...new Set(rows.flatMap(r=>Object.keys(r.raw)))].filter(k=>!['__t'].includes(k));
+ const c=x=>'"'+String(x??'').replace(/"/g,'""')+'"',H=['id','text','processed_text','sentiment','score','confidence',...ks];
+ const csv=[H.join(','),...rows.map(r=>[r.id,r.text,r.proc,r.label,r.score.toFixed(3),r.conf.toFixed(3),...ks.map(k=>r.raw[k])].map(c).join(','))].join('\n');
+ const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download=name+'.csv';a.click();toast('Export ready (opens in Excel).')}
+function report(){const v=view(),I=insights(v),K=I.K,M=metrics(),L=a=>`<ul>${a.map(x=>`<li>${esc(x)}</li>`).join('')}</ul>`,kl=a=>a.map(x=>x[0]+' ('+x[1]+')').join(', ')||'—';
+ const dts=v.filter(r=>r.date).map(r=>r.date).sort((a,b)=>a-b),o=I.o;
+ $('rep').classList.remove('hid');$('rep').innerHTML=`<h2>Sentiment Insights Report</h2><p class="kl">Generated ${new Date().toLocaleString()}${D.demo?' · SAMPLE DATA':''}</p>
+ <h3>1. Executive Summary</h3>${L(o['Overall Insight'])}<h3>2. Dataset Overview</h3><p>${I.n} valid records (of ${D.q.total} rows; ${D.q.excl.length} excluded). ${dts.length?`Date range ${dts[0].toISOString().slice(0,10)} to ${dts.at(-1).toISOString().slice(0,10)}.`:'No dates available.'}</p>
+ <h3>3. Sentiment Distribution</h3><p>Positive ${I.P} (${pct(I.P,I.n)}%) · Neutral ${I.U} (${pct(I.U,I.n)}%) · Negative ${I.N} (${pct(I.N,I.n)}%)</p>
+ <h3>4. Key Findings</h3>${L([...o['Overall Insight']].slice(0,3))}<h3>5. Positive Sentiment Drivers</h3>${L(o['Positive Drivers'])}<h3>6. Negative Sentiment Drivers</h3>${L(o['Negative Drivers'])}
+ <h3>7. Trends</h3>${L(o['Emerging Trends'])}<h3>8. Important Keywords</h3><p>Positive: ${kl(K.pos)}<br>Negative: ${kl(K.neg)}<br>Common: ${kl(K.com)}</p>
+ <h3>9. Business Insights</h3>${L(I.segs.map(s=>`${s[0]}: ${s[1]}% positive, ${s[2]}% negative`))}<h3>10. Recommendations</h3>${L(o['Recommended Actions'])}
+ <h3>11. Technical Methodology</h3><p>Text is cleaned, tokenized and scored by ${MODEL.name}. Score = normalised sum of word weights with negation and intensifier rules; labels use ±0.15 thresholds. Confidence is a heuristic. ${M?`Against the labelled column (${M.n} records): accuracy ${(M.acc*100).toFixed(1)}%, macro F1 ${(M.f*100).toFixed(1)}%.`:'Performance metrics are unavailable because the uploaded dataset does not contain labelled ground-truth sentiment values.'}</p>`;toast('Report generated.')}
+function pdf(){if(!D.recs.length)return toast('Load data first.',1);if($('rep').classList.contains('hid'))report();document.body.classList.add('pr');try{print()}catch{toast('Printing is blocked here; open the page in its own tab.',1)}document.body.classList.remove('pr')}
+
+/* ===== nav highlight ===== */
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)document.querySelectorAll('nav a').forEach(a=>a.classList.toggle('on',a.hash=='#'+e.target.id))}),{rootMargin:'-20% 0px -70% 0px'});
+document.querySelectorAll('main section').forEach(s=>io.observe(s));
+document.body.classList.add("nodata");model();demo(); // pre-load the 250-row sample dataset
+</script></body></html>
